@@ -63,14 +63,14 @@ if not SCAN_PAGE_FILE.exists():
     raise FileNotFoundError(f"File not found: {SCAN_PAGE_FILE}")
 
 
-@app.get("/")
-async def root():
-    return FileResponse(INDEX_PAGE_FILE)
+# @app.get("/")
+# async def root():
+#     return FileResponse(INDEX_PAGE_FILE)
 
 
-@app.get("/scan/")
-async def scan():
-    return FileResponse(SCAN_PAGE_FILE)
+# @app.get("/scan/")
+# async def scan():
+#     return FileResponse(SCAN_PAGE_FILE)
 
 
 @app.post("/scan/upload/")
