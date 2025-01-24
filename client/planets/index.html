@@ -1,3 +1,29 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6eac656b2c960b01176a3fab56acd79d12a421089030ab932f1ff130e60f393a
-size 747
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotating Planet with Text</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="gui-container"></div>
+
+    <script type="module">
+        import './threejs_rotating_planet.js';
+    </script>
+    {# Add text on the right and left side in html. Make it such that they are centered and a constant margin away from
+    edge#}
+
+    <div class="floating-text" id="left-text">Loading...</div>
+    <div class="floating-text" id="right-text">Loading...</div>
+
+    <script src="loadText.js"></script> <!-- Link to the script -->
+
+
+</body>
+
+</html>
