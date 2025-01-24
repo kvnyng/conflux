@@ -95,6 +95,6 @@ if __name__ == "__main__":
         "./data/landscapes/IdaChen_a5a853539942fd681ed835dfc305b4b8_landscapes.stl"
     )
     output_stl_path = (
-        "./data/planets/KevinYang_fe5e59a6d3699fd1af0470b1fa5773610_planet.stl"
+        "./data/planets/KevinYang_fe5e59a6d3699fd1af0470b1fa5773611_planet.stl"
     )
-    create_tiled_sphere(input_stl_path, output_stl_path, R=2, N=50)
+    create_tiled_sphere(input_stl_path, output_stl_path, R=1, N=50)

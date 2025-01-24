@@ -71,35 +71,3 @@ function animate() {
     renderer.render(scene, camera);
 }
 animate();
-
-// Form handling logic
-const SERVER_URL = 'http://10.250.144.197:8000/scan/upload';
-const form = document.getElementById('upload-form');
-const responseDiv = document.getElementById('response');
-
-// Handle the form submission
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // Prepare form data
-    const formData = new FormData();
-    formData.append('name', document.getElementById('name').value);
-    formData.append('file', document.getElementById('file').files[0]);
-
-    // Submit the data
-    try {
-        const response = await fetch(SERVER_URL, {
-            method: 'POST',
-            body: formData
-        });
-
-        const result = await response.json();
-        if (response.ok) {
-            responseDiv.innerHTML = `<p style="color: green;">${result.message}</p><p>Data: ${JSON.stringify(result.data)}</p>`;
-        } else {
-            responseDiv.innerHTML = `<p style="color: red;">Error: ${result.detail}</p>`;
-        }
-    } catch (error) {
-        responseDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
-    }
-});

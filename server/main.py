@@ -6,6 +6,7 @@ from pathlib import Path
 import json
 import hashlib
 from datetime import datetime
+import os
 
 from scripts.palm import extract_palm_region, to_camel_case_with_capital
 from scripts.landscape import generate_3d_mesh_from_heightmap
@@ -35,8 +36,8 @@ LANDSCAPES_FOLDER = "data/landscapes"
 
 PLANET_FOLDER = "data/planets"
 
-INDEX_PAGE_FILE = Path("index.html")
-# SCAN_PAGE_FILE = Path("docs") / "scan.html"
+# INDEX_PAGE_FILE = Path("index.html")
+INDEX_PAGE_FILE = Path("docs") / "index.html"
 
 
 Path(UPLOAD_FOLDER).mkdir(parents=True, exist_ok=True)
@@ -60,9 +61,9 @@ if not INDEX_PAGE_FILE.exists():
     raise FileNotFoundError(f"File not found: {INDEX_PAGE_FILE}")
 
 
-# @app.get("/")
-# async def root():
-#     return FileResponse(INDEX_PAGE_FILE)
+@app.get("/")
+async def root():
+    return FileResponse(INDEX_PAGE_FILE)
 
 
 # @app.get("/scan/")
@@ -176,6 +177,26 @@ async def upload_file(
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
 
+@app.get("/planet/stl/")
+async def get_latest_stl():
+    try:
+        # Get all .stl files in the LANDSCAPES_FOLDER
+        stl_files = list(Path(PLANET_FOLDER).glob("*.stl"))
+
+        if not stl_files:
+            raise HTTPException(status_code=404, detail="No STL files found.")
+
+        # Find the latest .stl file based on modification time
+        latest_stl = max(stl_files, key=os.path.getmtime)
+
+        return FileResponse(
+            latest_stl, media_type="application/vnd.ms-pkistl", filename=latest_stl.name
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
 @app.get("/favicon.ico")
 async def favicon():
     return RedirectResponse(url="/assets/favicon/favicon.ico")
@@ -184,4 +205,4 @@ async def favicon():
 # Serve static files (e.g., uploaded images)
 app.mount("/data", StaticFiles(directory="data"), name="data")
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
-app.mount("/client", StaticFiles(directory="docs"), name="docs")
+app.mount("/docs", StaticFiles(directory="docs"), name="docs")

@@ -10,3 +10,4 @@ debug/*
 demo/*
 *.xml
 models
+data_copy
