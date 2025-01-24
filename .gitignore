@@ -1,0 +1,11 @@
+.venv
+__pycache__
+uploads
+data
+.DS_Store
+.vite
+node_modules
+*.stl
+debug/*
+demo/*
+*.xml
