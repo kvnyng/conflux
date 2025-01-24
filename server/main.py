@@ -35,8 +35,8 @@ LANDSCAPES_FOLDER = "data/landscapes"
 
 PLANET_FOLDER = "data/planets"
 
-INDEX_PAGE_FILE = Path("docs") / "index.html"
-SCAN_PAGE_FILE = Path("docs") / "scan.html"
+INDEX_PAGE_FILE = Path("index.html")
+# SCAN_PAGE_FILE = Path("docs") / "scan.html"
 
 
 Path(UPLOAD_FOLDER).mkdir(parents=True, exist_ok=True)
@@ -58,9 +58,6 @@ if not PLANET_FILE.exists():
 
 if not INDEX_PAGE_FILE.exists():
     raise FileNotFoundError(f"File not found: {INDEX_PAGE_FILE}")
-
-if not SCAN_PAGE_FILE.exists():
-    raise FileNotFoundError(f"File not found: {SCAN_PAGE_FILE}")
 
 
 # @app.get("/")
@@ -127,7 +124,7 @@ async def upload_file(
             # Delete the raw file if processing fails
             if file_location.exists():
                 file_location.unlink()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise HTTPaException(status_code=400, detail=str(e))
 
         landscapes_file_location = Path(LANDSCAPES_FOLDER) / hashed_filename.replace(
             Path(file.filename).suffix, "_landscapes.stl"
