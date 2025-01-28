@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Sparkling Stars with Columns</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #000;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .column {
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .column:first-child {
+            width: 50%;
+        }
+
+        .column:nth-child(2) {
+            width: 25%;
+        }
+
+        .column:last-child {
+            width: 25%;
+            color: white;
+        }
+
+        .image {
+            width: 100%;
+            border-radius: 15px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .bullet-points {
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="bg"></canvas>
+
+    <div class="container">
+        <!-- First Column: Large STL Model -->
+        <div class="column" id="largeModel"></div>
+
+        <!-- Second Column: Image + Small STL Model -->
+        <div class="column">
+            <img src="example.jpg" alt="Example Image" class="image">
+            <div id="smallModel"></div>
+        </div>
+
+        <!-- Third Column: Text Content -->
+        <div class="column">
+            <div class="title">My Awesome Website</div>
+            <ul class="bullet-points">
+                <li>Interactive 3D content</li>
+                <li>Beautiful background</li>
+                <li>Custom models and visuals</li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+        // Background stars
+        const bgCanvas = document.getElementById('bg');
+        const bgScene = new THREE.Scene();
+        const bgCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const bgRenderer = new THREE.WebGLRenderer({ canvas: bgCanvas });
+
+        bgRenderer.setPixelRatio(window.devicePixelRatio);
+        bgRenderer.setSize(window.innerWidth, window.innerHeight);
+        bgCamera.position.setZ(1);
+
+        const starGeometry = new THREE.BufferGeometry();
+        const starMaterial = new THREE.PointsMaterial({ color: 0xffffff });
+
+        const stars = 10000;
+        const positions = new Float32Array(stars * 3);
+
+        for (let i = 0; i < stars; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 2000;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 2000;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
+        }
+
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const starMesh = new THREE.Points(starGeometry, starMaterial);
+        bgScene.add(starMesh);
+
+        function animateStars() {
+            requestAnimationFrame(animateStars);
+            starMesh.rotation.y += 0.0005;
+            bgRenderer.render(bgScene, bgCamera);
+        }
+        animateStars();
+
+        // STL Models
+        const loader = new STLLoader();
+        const mainScene = new THREE.Scene();
+        const mainCamera = new THREE.PerspectiveCamera(75, window.innerWidth / 2 / window.innerHeight, 0.1, 1000);
+        const mainRenderer = new THREE.WebGLRenderer();
+
+        document.getElementById('largeModel').appendChild(mainRenderer.domElement);
+        mainRenderer.setSize(window.innerWidth / 2, window.innerHeight);
+        mainCamera.position.z = 5;
+
+        const controls = new OrbitControls(mainCamera, mainRenderer.domElement);
+
+        loader.load('largeModel.stl', function (geometry) {
+            const material = new THREE.MeshStandardMaterial({ color: 0xff5533 });
+            const mesh = new THREE.Mesh(geometry, material);
+            mainScene.add(mesh);
+
+            function animateLargeModel() {
+                requestAnimationFrame(animateLargeModel);
+                mesh.rotation.x += 0.01;
+                mesh.rotation.y += 0.01;
+                mainRenderer.render(mainScene, mainCamera);
+            }
+            animateLargeModel();
+        });
+
+        const smallScene = new THREE.Scene();
+        const smallCamera = new THREE.PerspectiveCamera(75, window.innerWidth / 4 / window.innerHeight, 0.1, 1000);
+        const smallRenderer = new THREE.WebGLRenderer();
+
+        document.getElementById('smallModel').appendChild(smallRenderer.domElement);
+        smallRenderer.setSize(window.innerWidth / 4, window.innerHeight / 2);
+        smallCamera.position.z = 5;
+
+        loader.load('smallModel.stl', function (geometry) {
+            const material = new THREE.MeshStandardMaterial({ color: 0x33ff55 });
+            const mesh = new THREE.Mesh(geometry, material);
+            smallScene.add(mesh);
+
+            function animateSmallModel() {
+                requestAnimationFrame(animateSmallModel);
+                mesh.rotation.x += 0.02;
+                mesh.rotation.y += 0.02;
+                smallRenderer.render(smallScene, smallCamera);
+            }
+            animateSmallModel();
+        });
+    </script>
+</body>
+
+</html>
