@@ -76,7 +76,7 @@ const LIGHT_DIR_Y = 60;
 const LIGHT_DIR_Z = 150;
 
 const SERVER_URL = "http://10.250.144.197:8000"
-const ENDPOINT_STL = SERVER_URL + "/planet/stl/";
+const ENDPOINT_STL = SERVER_URL + "/planet/stl/latest";
 
 // Fetch the latest STL file from the API and load it
 fetch(ENDPOINT_STL)

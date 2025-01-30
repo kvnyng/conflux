@@ -24,33 +24,58 @@ canvas {
     display: flex;
     width: 100%;
     height: 100%;
-    text-align: center;
+    position: relative;
 }
 
 .column {
     padding: 20px;
-    overflow: auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* align-items: center; */
+    /* justify-content: center; */
 }
 
-.column:first-child {
+#leftColumn {
     width: 50%;
 }
 
-.column:nth-child(2) {
+#middleColumn {
     width: 25%;
 }
 
-.column:last-child {
+#middleColumn img {
+    top: 50%;
+    width: 100%;
+    max-width: 250px;
+    border-radius: 15px;
+    display: block;
+}
+
+#handPrint {
+    top: 50%;
+}
+
+#middleColumnCanvas {
+    top: 50%;
+    width: 100% !important;
+    height: auto;
+    max-height: 300px;
+    display: block;
+}
+
+#rightColumn {
     width: 25%;
     color: white;
+    text-align: center;
+    justify-content: center;
 }
 
 .image {
     width: 100%;
+    max-width: 250px;
     border-radius: 15px;
+    display: block;
+    top: 50%;
 }
 
 .title {
@@ -61,4 +86,12 @@ canvas {
 
 .bullet-points {
     font-size: 18px;
+    list-style: none;
+    padding: 0;
+}
+
+.qrCode {
+    width: 50%;
+    height: auto;
+    border-radius: 15px;
 }

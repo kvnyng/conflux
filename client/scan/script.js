@@ -77,6 +77,11 @@ const SERVER_URL = 'http://10.250.144.197:8000/scan/upload';
 const form = document.getElementById('upload-form');
 const responseDiv = document.getElementById('response');
 
+let data = null;
+
+// function () {
+
+// }
 // Handle the form submission
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -95,7 +100,8 @@ form.addEventListener('submit', async (e) => {
 
         const result = await response.json();
         if (response.ok) {
-            responseDiv.innerHTML = `<p style="color: green;">${result.message}</p><p>Data: ${JSON.stringify(result.data)}</p>`;
+            responseDiv.innerHTML = `<p style="color: green;">${result.message}</p><p style ="color: white;">Look up! You'll see your imprint on the cosmos shortly.</p>`;
+            data = result.data;
         } else {
             responseDiv.innerHTML = `<p style="color: red;">Error: ${result.detail}</p>`;
         }

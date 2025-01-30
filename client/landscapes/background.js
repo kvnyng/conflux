@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 // Background stars
 const bgCanvas = document.getElementById('bg');
 const bgScene = new THREE.Scene();

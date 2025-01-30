@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, Form, UploadFile, HTTPException, Request
+from fastapi import FastAPI, File, Form, UploadFile, HTTPException, Request, logger
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -166,6 +166,7 @@ async def upload_file(
 
         return JSONResponse(
             content={
+                "UUID": client_ip,
                 "message": "File uploaded and processed successfully!",
                 "data": new_entry,
             },
@@ -177,7 +178,34 @@ async def upload_file(
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
 
 
-@app.get("/planet/stl/")
+@app.get("landscape/stl/{client_ip}")
+async def get_client_stl(client_ip: str):
+    try:
+        with open(DATA_FILE, "r") as f:
+            data = json.load(f)
+            if not isinstance(data, dict):
+                raise ValueError("data.json is not a dictionary!")
+
+        if client_ip not in data:
+            raise HTTPException(status_code=404, detail="Client not found.")
+
+        client_data = data[client_ip]
+        landscapes_file_location = Path(client_data["landscapes"])
+
+        if not landscapes_file_location.exists():
+            raise HTTPException(status_code=404, detail="3D landscape file not found.")
+
+        return FileResponse(
+            landscapes_file_location,
+            media_type="application/vnd.ms-pkistl",
+            filename=landscapes_file_location.name,
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
+@app.get("/planet/stl/latest")
 async def get_latest_stl():
     try:
         # Get all .stl files in the LANDSCAPES_FOLDER
@@ -191,6 +219,65 @@ async def get_latest_stl():
 
         return FileResponse(
             latest_stl, media_type="application/vnd.ms-pkistl", filename=latest_stl.name
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
+@app.get("/palm/latest")
+async def get_latest_palm():
+    try:
+        # Get all .images files in the PALM_GREYSCALE_FOLDER
+        grey_images = list(Path(PALM_GREYSCALE_FOLDER).glob("*.png"))
+
+        if not grey_images:
+            raise HTTPException(status_code=404, detail="No images files found.")
+
+        # Find the latest .stl file based on modification time
+        latest_image = max(grey_images, key=os.path.getmtime)
+
+        return FileResponse(
+            latest_image, media_type="image/png", filename=latest_image.name
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
+@app.get("/planet/stl/latest")
+async def get_latest_stl():
+    try:
+        # Get all .stl files in the LANDSCAPES_FOLDER
+        stl_files = list(Path(PLANET_FOLDER).glob("*.stl"))
+
+        if not stl_files:
+            raise HTTPException(status_code=404, detail="No STL files found.")
+
+        # Find the latest .stl file based on modification time
+        latest_stl = max(stl_files, key=os.path.getmtime)
+
+        return FileResponse(
+            latest_stl, media_type="application/vnd.ms-pkistl", filename=latest_stl.name
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
+@app.get("/landscape/latest")
+async def get_latest_planet():
+    try:
+        # Get all .json files in the PLANET_FOLDER
+        landscapes = list(Path(LANDSCAPES_FOLDER).glob("*.stl"))
+
+        # Find the latest .json file based on modification time
+        latest_landscape = max(landscapes, key=os.path.getmtime)
+
+        return FileResponse(
+            latest_landscape,
+            media_type="application/json",
+            filename=latest_landscape.name,
         )
 
     except Exception as e:
