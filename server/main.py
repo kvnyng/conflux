@@ -61,7 +61,7 @@ if not INDEX_PAGE_FILE.exists():
     raise FileNotFoundError(f"File not found: {INDEX_PAGE_FILE}")
 
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "POST", "HEAD"])
 async def root():
     return FileResponse(INDEX_PAGE_FILE)
 
