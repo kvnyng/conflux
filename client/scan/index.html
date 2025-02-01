@@ -15,12 +15,24 @@
 
     <!-- Form Container -->
     <div class="container">
-        <h1>Creases of Our Cosmos</h1>
+        <h1 id="title">Getting Started</h1>
+        <h2>The Cosmic Imprints exhibit explores the connection between individuality and collective existence by
+            transforming handprints into cosmic landscapes.</h2>
+        <h2>To join this dynamic, evolving piece, click choose file and
+            take a photo of your hand.”</h2>
         <form id="upload-form">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" placeholder="Enter your name" required>
-            <label for="file">Choose a photo:</label>
+            <label id="name" for="name">What is your name?</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Alex Rane" required>
+            <label for="file" id="upload">Take a photo of your palm</label>
             <input type="file" id="file" name="file" accept="image/*" required>
+            <!-- Checkbox for Disclaimer -->
+            <div class="checkbox-container">
+                <input type="checkbox" id="disclaimer-checkbox" required>
+                <label for="disclaimer-checkbox">
+                    I agree to the <a href="https://example.com/disclaimer" target="_blank">terms and disclaimer</a>.
+                </label>
+            </div>
+
             <button type="submit" id="submit-btn">Upload</button>
         </form>
         <div id="response"></div>

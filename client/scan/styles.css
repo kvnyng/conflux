@@ -1,4 +1,14 @@
 /* General body styling */
+html,
+body {
+    height: auto;
+    /* Allows content to determine height */
+    min-height: 100vh;
+    /* Ensures it takes at least full screen height */
+    overflow-y: auto;
+    /* Enables vertical scrolling */
+}
+
 body {
     font-family: 'IBM Plex Mono', monospace;
     margin: 0;
@@ -35,6 +45,7 @@ body {
     text-align: center;
     width: 80%;
     max-width: 400px;
+    height: 100vh;
     z-index: 1;
     /* Layer above the Three.js scene */
 }
@@ -69,13 +80,15 @@ input::placeholder {
 
 /* Submit Button Styling */
 button {
+    position: relative;
+    margin-top: 4rem;
     background-color: #444;
     /* Dark gray button background */
     color: #fff;
     /* White text */
     border: none;
     padding: 10px 20px;
-    font-size: 1rem;
+    font-size: 1.2rem;
     border-radius: 5px;
     cursor: pointer;
     width: 100%;
@@ -120,4 +133,101 @@ button:hover {
     transition: width 0.1s ease-in-out;
     display: none;
     /* Initially hidden */
+}
+
+h2 {
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 1rem;
+    font-weight: normal;
+}
+
+#title {
+    position: relative;
+    /* Keep it relative */
+    display: block;
+    text-align: center;
+    font-size: 2rem;
+    color: #fff;
+    margin-top: 30vh;
+    /* Push it down dynamically */
+    width: 100%;
+}
+
+/* Adjust title position for smaller screens */
+@media (max-width: 1024px) {
+    #title {
+        margin-top: 35vh;
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    #title {
+        margin-top: 40vh;
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #title {
+        margin-top: 30vh;
+        font-size: 1.4rem;
+    }
+}
+
+#name {
+    position: relative;
+    display: block;
+    text-align: left;
+    font-size: 1.2rem;
+    color: #fff;
+    margin-top: 5%;
+    width: 100%;
+}
+
+#upload {
+    position: relative;
+    display: block;
+    text-align: left;
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+/* Checkbox Container */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Space between checkbox and text */
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: #fff;
+}
+
+/* Checkbox Styling */
+.checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #4ca5af;
+    /* Green checkbox (modern browsers) */
+}
+
+/* Label Styling */
+.checkbox-container label {
+    cursor: pointer;
+}
+
+/* Link Styling */
+.checkbox-container a {
+    color: #4ca5af;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.checkbox-container a:hover {
+    text-decoration: underline;
 }
