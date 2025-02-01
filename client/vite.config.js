@@ -12,6 +12,15 @@ export default defineConfig({
                 }
                 next();
             });
+        },
+        allowedHosts: ['cosmicimprint.org'],
+        proxy: {
+            '/api': {
+                target: 'https://api.cosmicimprint.org', // Redirect API calls
+                changeOrigin: true,
+                secure: true, // If using HTTPS
+                rewrite: (path) => path.replace(/^\/api/, ''),
+            }
         }
     },
     build: {
