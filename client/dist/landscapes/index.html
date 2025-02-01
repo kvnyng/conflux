@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terraformed Landscapes</title>
-    <link rel="stylesheet" href="./styles.css">
+  <script type="module" crossorigin src="/assets/landscapes-CVrWrkFs.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/three.module-DaOiP1Qo.js">
+  <link rel="modulepreload" crossorigin href="/assets/dat.gui.module-D-xaz02A.js">
+  <link rel="stylesheet" crossorigin href="/assets/landscapes-C-fub9v7.css">
 </head>
 
 <body>
@@ -19,11 +22,8 @@
 
         <!-- Second Column: Image + Small STL Model -->
         <div class="column" id="middleColumn">
-            <img src="" alt="Image Not Found" class="image" id="handPrint">
-            <script src="./secondColumn_palm.js" type="module"></script>
-            <!-- <script src="./secondColumn_palmImage.js" type="module"></script> -->
+            <img src="" alt="Example Image" class="image" id="handPrint">
             <canvas id="middleColumnCanvas"></canvas>
-            <script src="./secondColumn_landscape.js" type="module"></script>
         </div>
 
         <!-- Third Column: Text Content -->
@@ -32,15 +32,13 @@
             <ul class="bullet-points">
                 <li>1. Go to cosmic-creases.com</li>
                 <li>2. Scan your palm</li>
-                <img src="./assets/Ellen_c679b961102413d78a7dadd8fd5edea7_palm_greyscale.png" alt="Example Image"
+                <img src="/assets/Ellen_c679b961102413d78a7dadd8fd5edea7_palm_greyscale-CPlrAVW2.png" alt="Example Image"
                     class="qrCode">
                 <li>3. Watch terrain form</li>
             </ul>
         </div>
     </div>
 
-    <script src="background.js" type="module"></script>
-    <script src="model.js" type="module"></script>
 </body>
 
 </html>
