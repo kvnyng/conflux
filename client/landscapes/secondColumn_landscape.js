@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GUI } from 'dat.gui';
 
 const SERVER_URL = "http://api.cosmicimprint.org";
-const ENDPOINT_LANDSCAPE = SERVER_URL + "/landscape/latest/";
+const ENDPOINT_STL = SERVER_URL + "/landscape/latest/";
 
 const canvas = document.getElementById('middleColumnCanvas');
 const container = document.getElementById('middleColumn');
@@ -12,7 +12,7 @@ const container = document.getElementById('middleColumn');
 const loader = new STLLoader();
 const scene = new THREE.Scene();
 
-// Camera setup
+// Create camera with correct aspect ratio
 const camera = new THREE.PerspectiveCamera(
     75,
     canvas.clientWidth / canvas.clientHeight,
@@ -25,27 +25,21 @@ renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
 let planet;
 let pointLight;
+let controls;
 
 // Orbit properties
-let orbitRadius = 100;
+let orbitRadius = 10;
+let orbitSpeed = 0.001;
+let orbitAngle = 0;
 let zoomScale = 1;
-let orbitHeight = 50;
+let orbitHeight = 50; // Initial height above model
 const scale = 10;
 
+// Lighting
 const LIGHT_INTENSITY = 20;
 let modelCenter = new THREE.Vector3(0, 0, 0);
 
-// Orbit Controls: Allow Rotation Around Model's Center
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.05;
-controls.enableZoom = false; // Lock zooming (we use manual zoom control)
-controls.enablePan = false;  // Lock panning
-controls.rotateSpeed = 0.8;
-controls.minPolarAngle = Math.PI / 3;  // Prevent extreme overhead rotation
-controls.maxPolarAngle = (2 * Math.PI) / 3;
-
-// Calculate optimal orbit radius for visibility
+// Helper function to compute optimal orbit distance
 function calculateOptimalOrbitRadius(bbox) {
     const modelWidth = bbox.max.x - bbox.min.x;
     const modelDepth = bbox.max.y - bbox.min.y;
@@ -56,14 +50,17 @@ function calculateOptimalOrbitRadius(bbox) {
     return (maxDimension * 1.5) / Math.tan((camera.fov * Math.PI) / 360) / aspectRatio;
 }
 
-// Load STL model
-fetch(ENDPOINT_LANDSCAPE)
+// Fetch and load STL model
+fetch(ENDPOINT_STL)
     .then(response => {
-        if (!response.ok) throw new Error(`Failed to fetch STL file: ${response.statusText}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch STL file: ${response.statusText}`);
+        }
         return response.blob();
     })
     .then(blob => {
         const stl_url = URL.createObjectURL(blob);
+
         loader.load(stl_url, function (geometry) {
             geometry.computeBoundingBox();
             geometry.center();
@@ -76,7 +73,7 @@ fetch(ENDPOINT_LANDSCAPE)
             );
 
             const modelHeight = bbox.max.z - bbox.min.z;
-            orbitHeight = modelHeight * 1.5; // Adjust height dynamically
+            orbitHeight = modelHeight * 1.5;
 
             const material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.2 });
             planet = new THREE.Mesh(geometry, material);
@@ -99,24 +96,49 @@ fetch(ENDPOINT_LANDSCAPE)
             camera.position.set(modelCenter.x + orbitRadius, modelCenter.y + orbitHeight, modelCenter.z);
             camera.lookAt(modelCenter);
 
+            // Initialize OrbitControls
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.enableZoom = true; // Allow zooming
+            controls.enablePan = false; // Disable panning
+            controls.rotateSpeed = 0.8;
+
             controls.target.set(modelCenter.x, modelCenter.y, modelCenter.z);
             controls.update();
         });
     })
-    .catch(error => console.error("Error loading STL file:", error));
+    .catch(error => {
+        console.error("Error loading STL file:", error);
+    });
 
+// Ambient light
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
 scene.add(ambientLight);
 
-// Animation loop
+// Animation loop (Camera Orbits & Zooms Into Model)
 function animate() {
     requestAnimationFrame(animate);
-    controls.update();  // Update orbit controls
+
+    if (planet) {
+        if (!controls || !controls.mouseButtons.LEFT) {
+            // Only auto-orbit when mouse is not dragging
+            orbitAngle += orbitSpeed;
+            const adjustedRadius = orbitRadius / zoomScale;
+            camera.position.x = modelCenter.x + adjustedRadius * Math.cos(orbitAngle);
+            camera.position.z = modelCenter.z + adjustedRadius * Math.sin(orbitAngle);
+            camera.position.y = modelCenter.y + orbitHeight;
+
+            camera.lookAt(modelCenter);
+        }
+    }
+
+    if (controls) controls.update();
     renderer.render(scene, camera);
 }
 animate();
 
-// Handle window resize
+// Resize event listener to adjust canvas and camera
 function onWindowResize() {
     const width = container.clientWidth;
     const height = container.clientHeight;
@@ -133,20 +155,29 @@ function onWindowResize() {
 
 window.addEventListener("resize", onWindowResize);
 
-// GUI Controls
+// GUI for adjusting camera orbit and zoom
 const gui = new GUI();
 const settings = {
     orbitRadius: orbitRadius,
+    orbitSpeed: orbitSpeed,
     zoomScale: zoomScale,
     orbitHeight: orbitHeight
 };
 
-gui.add(settings, 'orbitRadius', 50, 300).onChange(value => orbitRadius = value);
-gui.add(settings, 'zoomScale', 0.5, 5).onChange(value => zoomScale = value);
-gui.add(settings, 'orbitHeight', 10, 200).onChange(value => {
-    orbitHeight = value;
-    camera.position.y = modelCenter.y + orbitHeight;
-    camera.lookAt(modelCenter);
+gui.add(settings, 'orbitRadius', 10, 50).onChange(value => {
+    orbitRadius = value;
 });
 
-console.log("hi");
+gui.add(settings, 'orbitSpeed', 0.0001, 0.01).onChange(value => {
+    orbitSpeed = value;
+});
+
+gui.add(settings, 'zoomScale', 0.5, 5).onChange(value => {
+    zoomScale = value;
+});
+
+gui.add(settings, 'orbitHeight', 10, 200).onChange(value => {
+    orbitHeight = value;
+});
+
+console.log("Loaded second column landscape script");
