@@ -9,7 +9,6 @@ body {
     justify-content: center;
     background: #000;
     color: #fff;
-
 }
 
 /* Hero Section */
@@ -30,10 +29,6 @@ body {
     text-transform: uppercase;
     letter-spacing: 3px;
     font-weight: 300;
-    /* margin-top: 15rem; */
-    /* position: absolute; */
-    /* left: 50%;
-    right: 50%; */
 }
 
 .hero .content h2 {
@@ -41,7 +36,17 @@ body {
     margin-top: 2rem;
     font-weight: 500;
     color: #d1d1d1;
-    /* position: absolute; */
+}
+
+/* Make hero text responsive */
+@media (max-width: 768px) {
+    .hero .content h1 {
+        font-size: 2rem;
+    }
+
+    .hero .content h2 {
+        font-size: 1.2rem;
+    }
 }
 
 /* Logos Section */
@@ -50,13 +55,8 @@ body {
     justify-content: center;
     position: absolute;
     top: 50vh;
-
-    /* position: absolute; */
-    /* bottom: 10%; */
     width: 100%;
     gap: 1.5rem;
-    /* top: 50%; */
-    /* margin-top: 15%; */
 }
 
 .logos .logo {
@@ -65,7 +65,6 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* background-color: rgba(255, 255, 255, 0.1); */
     border-radius: 8px;
     margin: 0 1rem;
 }
@@ -75,22 +74,21 @@ body {
     max-height: 100%;
 }
 
-
+/* Scan Button */
 .scan-button {
     width: 200px;
-    /* Set a fixed width */
     height: 60px;
-    /* Optional: Set a fixed height */
     position: absolute;
-    top: 57%;
-    left: 50%;
-    transform: translateX(-50%);
+    /* Relative to the content */
+    /* transform: translate(500%, 50%); */
+    top: 55vh;
+    display: block;
+    margin: 2rem auto 0;
+    /* Center below the hero text */
     padding: 16px 32px;
-    /* Increased padding */
     background-color: white;
     color: black;
     font-size: 22px;
-    /* Bigger font size */
     font-weight: bold;
     border: none;
     border-radius: 50px;
@@ -103,6 +101,5 @@ body {
 .scan-button:hover {
     background-color: #ddd;
     color: black;
-    transform: translateX(-50%) scale(1.1);
-    /* Slight scale-up effect */
+    transform: scale(1.1);
 }
