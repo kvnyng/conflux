@@ -38,7 +38,7 @@ LANDSCAPES_FOLDER = "data/landscapes"
 PLANET_FOLDER = "data/planets"
 
 # INDEX_PAGE_FILE = Path("index.html")
-INDEX_PAGE_FILE = Path("docs") / "index.html"
+# INDEX_PAGE_FILE = Path("docs") / "index.html"
 
 
 Path(UPLOAD_FOLDER).mkdir(parents=True, exist_ok=True)
@@ -58,8 +58,8 @@ if not PLANET_FILE.exists():
     with open(PLANET_FILE, "w") as f:
         json.dump({}, f)
 
-if not INDEX_PAGE_FILE.exists():
-    raise FileNotFoundError(f"File not found: {INDEX_PAGE_FILE}")
+# if not INDEX_PAGE_FILE.exists():
+#     raise FileNotFoundError(f"File not found: {INDEX_PAGE_FILE}")
 
 
 @app.api_route("/", methods=["GET", "POST", "HEAD"])
