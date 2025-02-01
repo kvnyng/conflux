@@ -50,67 +50,73 @@ function calculateOptimalOrbitRadius(bbox) {
     return (maxDimension * 1.5) / Math.tan((camera.fov * Math.PI) / 360) / aspectRatio;
 }
 
-// Fetch and load STL model
-fetch(ENDPOINT_STL)
-    .then(response => {
+async function fetchSTLFile(endpoint) {
+    try {
+        const response = await fetch(endpoint);
         if (!response.ok) {
             throw new Error(`Failed to fetch STL file: ${response.statusText}`);
         }
-        return response.blob();
-    })
-    .then(blob => {
-        const stl_url = URL.createObjectURL(blob);
-
-        loader.load(stl_url, function (geometry) {
-            geometry.computeBoundingBox();
-            geometry.center();
-
-            const bbox = geometry.boundingBox;
-            modelCenter = new THREE.Vector3(
-                (bbox.max.x + bbox.min.x) / 2,
-                (bbox.max.y + bbox.min.y) / 2,
-                (bbox.max.z + bbox.min.z) / 2
-            );
-
-            const modelHeight = bbox.max.z - bbox.min.z;
-            orbitHeight = modelHeight * 1.5;
-
-            const material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.2 });
-            planet = new THREE.Mesh(geometry, material);
-            planet.scale.set(scale, scale, scale);
-            scene.add(planet);
-
-            orbitRadius = calculateOptimalOrbitRadius(bbox);
-
-            pointLight = new THREE.PointLight(0xffffff, LIGHT_INTENSITY);
-            pointLight.position.set(50, 50, 50);
-            scene.add(pointLight);
-
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-            directionalLight.position.set(-50, 60, 150);
-            scene.add(directionalLight);
-
-            planet.add(pointLight);
-
-            // Set initial camera position
-            camera.position.set(modelCenter.x + orbitRadius, modelCenter.y + orbitHeight, modelCenter.z);
-            camera.lookAt(modelCenter);
-
-            // Initialize OrbitControls
-            controls = new OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.enableZoom = true; // Allow zooming
-            controls.enablePan = false; // Disable panning
-            controls.rotateSpeed = 0.8;
-
-            controls.target.set(modelCenter.x, modelCenter.y, modelCenter.z);
-            controls.update();
-        });
-    })
-    .catch(error => {
+        return await response.blob(); // Return the STL file as a blob
+    } catch (error) {
         console.error("Error loading STL file:", error);
+        return null;
+    }
+}
+
+function loadSTLIntoScene(blob, scene) {
+    if (!blob) return;
+
+    const stl_url = URL.createObjectURL(blob);
+
+    loader.load(stl_url, function (geometry) {
+        geometry.computeBoundingBox();
+        geometry.center();
+
+        const bbox = geometry.boundingBox;
+        modelCenter = new THREE.Vector3(
+            (bbox.max.x + bbox.min.x) / 2,
+            (bbox.max.y + bbox.min.y) / 2,
+            (bbox.max.z + bbox.min.z) / 2
+        );
+
+        const modelHeight = bbox.max.z - bbox.min.z;
+        orbitHeight = modelHeight * 1.5;
+
+        const material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.2 });
+        planet = new THREE.Mesh(geometry, material);
+        planet.scale.set(scale, scale, scale);
+        scene.add(planet);
+
+        orbitRadius = calculateOptimalOrbitRadius(bbox);
+
+        pointLight = new THREE.PointLight(0xffffff, LIGHT_INTENSITY);
+        pointLight.position.set(50, 50, 50);
+        scene.add(pointLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(-50, 60, 150);
+        scene.add(directionalLight);
+
+        planet.add(pointLight);
+
+        // Set initial camera position
+        camera.position.set(modelCenter.x + orbitRadius, modelCenter.y + orbitHeight, modelCenter.z);
+        camera.lookAt(modelCenter);
+
+        // // Initialize OrbitControls
+        // controls = new OrbitControls(camera, renderer.domElement);
+        // controls.enableDamping = true;
+        // controls.dampingFactor = 0.05;
+        // controls.enableZoom = true; // Allow zooming
+        // controls.enablePan = false; // Disable panning
+        // controls.rotateSpeed = 0.8;
+
+        // controls.target.set(modelCenter.x, modelCenter.y, modelCenter.z);
+        // controls.update();
     });
+}
+
+fetchSTLFile(ENDPOINT_STL).then(blob => loadSTLIntoScene(blob, scene));
 
 // Ambient light
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
@@ -155,29 +161,38 @@ function onWindowResize() {
 
 window.addEventListener("resize", onWindowResize);
 
-// GUI for adjusting camera orbit and zoom
-const gui = new GUI();
-const settings = {
-    orbitRadius: orbitRadius,
-    orbitSpeed: orbitSpeed,
-    zoomScale: zoomScale,
-    orbitHeight: orbitHeight
-};
+// // GUI for adjusting camera orbit and zoom
+// const gui = new GUI();
+// const settings = {
+//     orbitRadius: orbitRadius,
+//     orbitSpeed: orbitSpeed,
+//     zoomScale: zoomScale,
+//     orbitHeight: orbitHeight
+// };
 
-gui.add(settings, 'orbitRadius', 10, 50).onChange(value => {
-    orbitRadius = value;
-});
+// gui.add(settings, 'orbitRadius', 10, 50).onChange(value => {
+//     orbitRadius = value;
+// });
 
-gui.add(settings, 'orbitSpeed', 0.0001, 0.01).onChange(value => {
-    orbitSpeed = value;
-});
+// gui.add(settings, 'orbitSpeed', 0.0001, 0.01).onChange(value => {
+//     orbitSpeed = value;
+// });
 
-gui.add(settings, 'zoomScale', 0.5, 5).onChange(value => {
-    zoomScale = value;
-});
+// gui.add(settings, 'zoomScale', 0.5, 5).onChange(value => {
+//     zoomScale = value;
+// });
 
-gui.add(settings, 'orbitHeight', 10, 200).onChange(value => {
-    orbitHeight = value;
-});
+// gui.add(settings, 'orbitHeight', 10, 200).onChange(value => {
+//     orbitHeight = value;
+// });
 
 console.log("Loaded second column landscape script");
+
+const eventSource = new EventSource(SERVER_URL + "/notifications/");
+
+eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log("Push Notification:", data.message);
+    alert(`New Notification: ${data.message}`);
+    reloadSTLModel();
+};

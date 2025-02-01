@@ -44,7 +44,7 @@ canvas {
 }
 
 #middleColumn img {
-    top: 50%;
+    top: 15%;
     width: 100%;
     max-width: 250px;
     border-radius: 15px;
@@ -52,7 +52,7 @@ canvas {
 }
 
 #handPrint {
-    top: 50%;
+    top: 20%;
 }
 
 #middleColumnCanvas {
@@ -71,11 +71,12 @@ canvas {
 }
 
 .image {
+    position: absolute;
     width: 100%;
     max-width: 250px;
     border-radius: 15px;
     display: block;
-    top: 50%;
+    top: 10%;
 }
 
 .title {
@@ -91,7 +92,19 @@ canvas {
 }
 
 .qrCode {
-    width: 50%;
+    width: 30%;
     height: auto;
     border-radius: 15px;
+    padding: 10px;
+}
+
+#handPrintHeader {
+    position: absolute;
+    top: 45%;
+    align-items: center;
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: white;
+    text-align: center;
 }
