@@ -293,4 +293,4 @@ async def favicon():
 # Serve static files (e.g., uploaded images)
 app.mount("/data", StaticFiles(directory="data"), name="data")
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
-app.mount("/docs", StaticFiles(directory="docs"), name="docs")
+# app.mount("/docs", StaticFiles(directory="docs"), name="docs")
