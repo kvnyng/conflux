@@ -6,7 +6,7 @@ import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRe
 import { GUI } from 'dat.gui';
 
 const SERVER_URL = "http://api.cosmicimprint.org"
-const ENDPOINT_STL = SERVER_URL + "/planet/latest/";
+const ENDPOINT_STL = SERVER_URL + "/planets/stl/latest/";
 
 // Initialize the scene, camera, and renderer
 const scene = new THREE.Scene();
