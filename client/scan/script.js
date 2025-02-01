@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 const SERVER_URL = "http://api.cosmicimprint.org"
-const ENDPOINT_STL = SERVER_URL + "/scan/upload";
+const ENDPOINT_STL = SERVER_URL + "/scan/upload/";
 
 // Initialize the scene, camera, and renderer
 const scene = new THREE.Scene();
