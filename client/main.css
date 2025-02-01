@@ -1,0 +1,108 @@
+/* General Styling */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    color: #fff;
+
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    top: 30%;
+}
+
+.content {
+    margin-top: 5%;
+}
+
+.hero .content h1 {
+    font-size: 3rem;
+    margin: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 300;
+    /* margin-top: 15rem; */
+    /* position: absolute; */
+    /* left: 50%;
+    right: 50%; */
+}
+
+.hero .content h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    font-weight: 500;
+    color: #d1d1d1;
+    /* position: absolute; */
+}
+
+/* Logos Section */
+.logos {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: 50vh;
+
+    /* position: absolute; */
+    /* bottom: 10%; */
+    width: 100%;
+    gap: 1.5rem;
+    /* top: 50%; */
+    /* margin-top: 15%; */
+}
+
+.logos .logo {
+    width: 180px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: rgba(255, 255, 255, 0.1); */
+    border-radius: 8px;
+    margin: 0 1rem;
+}
+
+.logos .logo img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+.scan-button {
+    width: 200px;
+    /* Set a fixed width */
+    height: 60px;
+    /* Optional: Set a fixed height */
+    position: absolute;
+    top: 57%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 16px 32px;
+    /* Increased padding */
+    background-color: white;
+    color: black;
+    font-size: 22px;
+    /* Bigger font size */
+    font-weight: bold;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s, transform 0.2s;
+    box-shadow: 2px 2px 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Optional: Make button even bigger on hover */
+.scan-button:hover {
+    background-color: #ddd;
+    color: black;
+    transform: translateX(-50%) scale(1.1);
+    /* Slight scale-up effect */
+}
