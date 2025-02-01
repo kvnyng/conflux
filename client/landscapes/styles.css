@@ -44,7 +44,7 @@ canvas {
 }
 
 #middleColumn img {
-    top: 15%;
+    top: 38vh;
     width: 100%;
     max-width: 250px;
     border-radius: 15px;
@@ -71,12 +71,11 @@ canvas {
 }
 
 .image {
-    position: absolute;
+    /* position: absolute; */
     width: 100%;
     max-width: 250px;
     border-radius: 15px;
     display: block;
-    top: 10%;
 }
 
 .title {
@@ -99,12 +98,10 @@ canvas {
 }
 
 #handPrintHeader {
-    position: absolute;
-    top: 45%;
-    align-items: center;
+    margin-top: 80%;
+    position: relative;
     font-size: 30px;
     font-weight: bold;
     margin-bottom: 10px;
     color: white;
-    text-align: center;
 }
