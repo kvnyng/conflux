@@ -13,6 +13,7 @@ from scripts.landscape import generate_3d_mesh_from_heightmap
 
 from starlette.responses import FileResponse
 
+
 app = FastAPI()
 
 # Enable CORS for testing purposes
@@ -63,7 +64,7 @@ if not INDEX_PAGE_FILE.exists():
 
 @app.api_route("/", methods=["GET", "POST", "HEAD"])
 async def root():
-    return FileResponse(INDEX_PAGE_FILE)
+    return {"message": "Welcome to the Palm to Planet API!"}
 
 
 # @app.get("/scan/")
