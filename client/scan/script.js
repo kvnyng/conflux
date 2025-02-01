@@ -1,5 +1,8 @@
 import * as THREE from 'three';
 
+const SERVER_URL = "http://api.cosmicimprint.org"
+const ENDPOINT_STL = SERVER_URL + "/scan/upload";
+
 // Initialize the scene, camera, and renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -73,7 +76,7 @@ function animate() {
 animate();
 
 // Form handling logic
-const SERVER_URL = 'http://10.250.144.197:8000/scan/upload';
+
 const form = document.getElementById('upload-form');
 const responseDiv = document.getElementById('response');
 
@@ -93,7 +96,7 @@ form.addEventListener('submit', async (e) => {
 
     // Submit the data
     try {
-        const response = await fetch(SERVER_URL, {
+        const response = await fetch(ENDPOINT_STL, {
             method: 'POST',
             body: formData
         });

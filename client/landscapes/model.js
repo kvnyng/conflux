@@ -4,6 +4,9 @@ import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GUI } from 'dat.gui';
 
+const SERVER_URL = "http://api.cosmicimprint.org"
+const ENDPOINT_STL = SERVER_URL + "/planet/stl/latest";
+
 // STL Models
 const canvas = document.getElementById('leftColumnCanvas');
 const loader = new STLLoader();
@@ -31,8 +34,6 @@ const LIGHT_DIR_X = -50;
 const LIGHT_DIR_Y = 60;
 const LIGHT_DIR_Z = 150;
 
-const SERVER_URL = "http://10.250.144.197:8000"
-const ENDPOINT_STL = SERVER_URL + "/planet/stl/latest";
 
 // Fetch the latest STL file from the API and load it
 fetch(ENDPOINT_STL)

@@ -3,6 +3,9 @@ import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GUI } from 'dat.gui';
 
+const SERVER_URL = "http://api.cosmicimprint.org";
+const ENDPOINT_STL = SERVER_URL + "/landscape/latest";
+
 // Get the correct canvas and container
 const canvas = document.getElementById('middleColumnCanvas');
 const container = document.getElementById('middleColumn');
@@ -33,8 +36,6 @@ const scale = 10;
 
 // Lighting
 const LIGHT_INTENSITY = 20;
-const SERVER_URL = "http://10.250.144.197:8000";
-const ENDPOINT_STL = SERVER_URL + "/landscape/latest";
 
 // Variable to store the model center position
 let modelCenter = new THREE.Vector3(0, 0, 0);

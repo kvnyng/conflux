@@ -5,6 +5,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { GUI } from 'dat.gui';
 
+const SERVER_URL = "http://api.cosmicimprint.org"
+const ENDPOINT_STL = SERVER_URL + "/planet/stl/latest";
+
 // Initialize the scene, camera, and renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -74,9 +77,6 @@ const LIGHT_INTENSITY = 20;
 const LIGHT_DIR_X = -50;
 const LIGHT_DIR_Y = 60;
 const LIGHT_DIR_Z = 150;
-
-const SERVER_URL = "http://10.250.144.197:8000"
-const ENDPOINT_STL = SERVER_URL + "/planet/stl/latest";
 
 // Fetch the latest STL file from the API and load it
 fetch(ENDPOINT_STL)
