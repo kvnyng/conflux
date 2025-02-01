@@ -93,9 +93,11 @@ form.addEventListener('submit', async (e) => {
     const formData = new FormData();
     formData.append('name', document.getElementById('name').value);
     formData.append('file', document.getElementById('file').files[0]);
+    responseDiv.innerHTML = `<p style="color: white;">Information received. Uploading to the cosmos</p>`;
 
     // Submit the data
     try {
+
         const response = await fetch(ENDPOINT_STL, {
             method: 'POST',
             body: formData
