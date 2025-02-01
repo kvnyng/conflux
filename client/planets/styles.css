@@ -16,16 +16,17 @@ body {
     width: 20%;
     word-wrap: break-word;
     font-family: "IBM Plex Mono", monospace;
+    line-height: 1.5rem;
 }
 
 #left-text {
-    top: 20%;
+    top: 13%;
     left: 5%;
     text-align: left;
 }
 
 #right-text {
-    top: 20%;
+    top: 21%;
     right: 5%;
     text-align: right;
 }

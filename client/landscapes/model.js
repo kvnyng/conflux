@@ -5,7 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GUI } from 'dat.gui';
 
 const SERVER_URL = "http://api.cosmicimprint.org"
-const ENDPOINT_STL = SERVER_URL + "/planet/latest/";
+const ENDPOINT_STL = SERVER_URL + "/planets/stl/latest/";
 
 // STL Models
 const canvas = document.getElementById('leftColumnCanvas');
@@ -60,7 +60,7 @@ function loadSTLIntoScene(blob, scene) {
             metalness: 0.2
         });
 
-        const planet = new THREE.Mesh(geometry, material);
+        planet = new THREE.Mesh(geometry, material);
         planet.rotation.x = Math.PI / 2; // Adjust initial orientation if needed
         planet.scale.set(20, 20, 20); // Set initial scale
         scene.add(planet);
@@ -167,7 +167,7 @@ function animateCamera() {
 }
 
 // Orbit Controls
-const controls = new OrbitControls(camera, renderer.domElement);
+// const controls = new OrbitControls(camera, renderer.domElement);
 
 const X_AXIS_ROTATION_RATE = 0.005;
 const Y_AXIS_ROTATION_RATE = 0.0075;

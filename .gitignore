@@ -12,3 +12,4 @@ demo/*
 models
 data_copy
 dist/
+!default_sheet.stl
