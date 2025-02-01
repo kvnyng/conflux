@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GUI } from 'dat.gui';
 
 const SERVER_URL = "http://api.cosmicimprint.org";
-const ENDPOINT_STL = SERVER_URL + "/landscape/latest";
+const ENDPOINT_LANDSCAPE = SERVER_URL + "/landscape/latest/";
 
 // Get the correct canvas and container
 const canvas = document.getElementById('middleColumnCanvas');
@@ -41,7 +41,7 @@ const LIGHT_INTENSITY = 20;
 let modelCenter = new THREE.Vector3(0, 0, 0);
 
 // Fetch and load STL model
-fetch(ENDPOINT_STL)
+fetch(ENDPOINT_LANDSCAPE)
     .then(response => {
         if (!response.ok) {
             throw new Error(`Failed to fetch STL file: ${response.statusText}`);

@@ -1,5 +1,5 @@
-const SERVER_URL = "http://api.cosmicimprint.org"
-const ENDPOINT_STL = SERVER_URL + "/planet/stl/latest";
+const SERVER_URL = "http://api.cosmicimprint.org";
+const ENDPOINT_PALM_IMAGE = SERVER_URL + "/palm/latest/";
 
 fetch(ENDPOINT_PALM_IMAGE)
     .then(response => {
