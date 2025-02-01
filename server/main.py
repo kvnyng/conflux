@@ -2,6 +2,10 @@ from fastapi import FastAPI, File, Form, UploadFile, HTTPException, Request, log
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import BackgroundTasks
+from fastapi.responses import StreamingResponse
+import asyncio
+
 from pathlib import Path
 import json
 import hashlib
@@ -52,6 +56,9 @@ Path(LANDSCAPES_FOLDER).mkdir(parents=True, exist_ok=True)
 Path(PLANETS_FOLDER).mkdir(parents=True, exist_ok=True)
 Path(PLANET_FOLDER).mkdir(parents=True, exist_ok=True)
 
+
+event_queue = asyncio.Queue()
+
 # Initialize the JSON data file if it doesn't exist
 if not DATA_FILE.exists():
     with open(DATA_FILE, "w") as f:
@@ -77,7 +84,10 @@ async def root():
 
 @app.post("/scan/upload/")
 async def upload_file(
-    request: Request, name: str = Form(...), file: UploadFile = File(...)
+    request: Request,
+    background_tasks: BackgroundTasks,
+    name: str = Form(...),
+    file: UploadFile = File(...),
 ):
     try:
         client_ip = request.client.host
@@ -182,6 +192,8 @@ async def upload_file(
         # Save updated data
         with open(DATA_FILE, "w") as f:
             json.dump(data, f, indent=4)
+
+        background_tasks.add_task(event_queue.put, new_entry)
 
         return JSONResponse(
             content={
@@ -324,6 +336,16 @@ async def get_latest_planet():
 @app.get("/favicon.ico")
 async def favicon():
     return RedirectResponse(url="/assets/favicon/favicon.ico")
+
+
+@app.get("/notifications/")
+async def event_stream():
+    async def event_generator():
+        while True:
+            event = await event_queue.get()
+            yield f"data: {event}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
 # Serve static files (e.g., uploaded images)

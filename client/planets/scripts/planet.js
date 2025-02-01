@@ -209,13 +209,21 @@ const settings = {
     lightZ: LIGHT_Z_POSITION
 };
 
-gui.add(settings, 'scale', MIN_SCALE_VALUE, MAX_SCALE_VALUE).onChange((value) => {
-    if (planet) {
-        planet.scale.set(value, value, value);
-    }
-});
-gui.add(settings, 'lightIntensity', MIN_LIGHT_INTENSITY, MAX_LIGHT_INTENSITY).onChange((value) => {
-    if (pointLight) {
-        pointLight.intensity = value;
-    }
-});
+// gui.add(settings, 'scale', MIN_SCALE_VALUE, MAX_SCALE_VALUE).onChange((value) => {
+//     if (planet) {
+//         planet.scale.set(value, value, value);
+//     }
+// });
+// gui.add(settings, 'lightIntensity', MIN_LIGHT_INTENSITY, MAX_LIGHT_INTENSITY).onChange((value) => {
+//     if (pointLight) {
+//         pointLight.intensity = value;
+//     }
+// });
+
+const eventSource = new EventSource(SERVER_URL + "/notifications/");
+
+eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log("Push Notification:", data.message);
+    alert(`New Notification: ${data.message}`);
+};

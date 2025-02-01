@@ -5,7 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GUI } from 'dat.gui';
 
 const SERVER_URL = "http://api.cosmicimprint.org"
-const ENDPOINT_STL = SERVER_URL + "/planets/stl/latest";
+const ENDPOINT_STL = SERVER_URL + "/planet/latest/";
 
 // STL Models
 const canvas = document.getElementById('leftColumnCanvas');
@@ -35,42 +35,88 @@ const LIGHT_DIR_Y = 60;
 const LIGHT_DIR_Z = 150;
 
 
-// Fetch the latest STL file from the API and load it
-fetch(ENDPOINT_STL)
-    .then(response => {
+async function fetchSTLFile(endpoint) {
+    try {
+        const response = await fetch(endpoint);
         if (!response.ok) {
             throw new Error(`Failed to fetch STL file: ${response.statusText}`);
         }
-        return response.blob();
-    })
-    .then(blob => {
-        const stl_url = URL.createObjectURL(blob); // Create an object URL for the STL file
-
-        loader.load(stl_url, function (geometry) {
-            const material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.2 });
-            planet = new THREE.Mesh(geometry, material);
-            planet.rotation.x = Math.PI / 2; // Adjust initial orientation if needed
-            scene.add(planet);
-
-            // Add a point light targeting the STL model
-            pointLight = new THREE.PointLight(0xffffff, LIGHT_INTENSITY);
-            pointLight.position.set(50, 50, 50); // Position the light
-            scene.add(pointLight);
-
-            // Add another light for better visibility
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-            directionalLight.position.set(LIGHT_DIR_X, LIGHT_DIR_Y, LIGHT_DIR_Z);
-            scene.add(directionalLight);
-
-            // Attach the point light to the planet for consistent lighting
-            planet.add(pointLight);
-
-            planet.scale.set(20, 20, 20); // Set initial scale
-        });
-    })
-    .catch(error => {
+        return await response.blob(); // Return the STL file as a blob
+    } catch (error) {
         console.error("Error loading STL file:", error);
+        return null;
+    }
+}
+
+function loadSTLIntoScene(blob, scene) {
+    if (!blob) return;
+
+    const stl_url = URL.createObjectURL(blob);
+
+    loader.load(stl_url, function (geometry) {
+        const material = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            roughness: 0.5,
+            metalness: 0.2
+        });
+
+        const planet = new THREE.Mesh(geometry, material);
+        planet.rotation.x = Math.PI / 2; // Adjust initial orientation if needed
+        planet.scale.set(20, 20, 20); // Set initial scale
+        scene.add(planet);
+
+        // Add lighting
+        const pointLight = new THREE.PointLight(0xffffff, LIGHT_INTENSITY);
+        pointLight.position.set(50, 50, 50);
+        scene.add(pointLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(LIGHT_DIR_X, LIGHT_DIR_Y, LIGHT_DIR_Z);
+        scene.add(directionalLight);
+
+        // Attach the point light to the planet
+        planet.add(pointLight);
     });
+}
+
+fetchSTLFile(ENDPOINT_STL).then(blob => loadSTLIntoScene(blob, scene));
+
+// // Fetch the latest STL file from the API and load it
+// fetch(ENDPOINT_STL)
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error(`Failed to fetch STL file: ${response.statusText}`);
+//         }
+//         return response.blob();
+//     })
+//     .then(blob => {
+//         const stl_url = URL.createObjectURL(blob); // Create an object URL for the STL file
+
+//         loader.load(stl_url, function (geometry) {
+//             const material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.2 });
+//             planet = new THREE.Mesh(geometry, material);
+//             planet.rotation.x = Math.PI / 2; // Adjust initial orientation if needed
+//             scene.add(planet);
+
+//             // Add a point light targeting the STL model
+//             pointLight = new THREE.PointLight(0xffffff, LIGHT_INTENSITY);
+//             pointLight.position.set(50, 50, 50); // Position the light
+//             scene.add(pointLight);
+
+//             // Add another light for better visibility
+//             const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+//             directionalLight.position.set(LIGHT_DIR_X, LIGHT_DIR_Y, LIGHT_DIR_Z);
+//             scene.add(directionalLight);
+
+//             // Attach the point light to the planet for consistent lighting
+//             planet.add(pointLight);
+
+//             planet.scale.set(20, 20, 20); // Set initial scale
+//         });
+//     })
+//     .catch(error => {
+//         console.error("Error loading STL file:", error);
+//     });
 
 // Mouse rotation event listeners
 document.addEventListener('mousedown', (event) => {
@@ -166,13 +212,30 @@ const settings = {
     lightZ: LIGHT_Z_POSITION
 };
 
-gui.add(settings, 'scale', MIN_SCALE_VALUE, MAX_SCALE_VALUE).onChange((value) => {
-    if (planet) {
-        planet.scale.set(value, value, value);
+// gui.add(settings, 'scale', MIN_SCALE_VALUE, MAX_SCALE_VALUE).onChange((value) => {
+//     if (planet) {
+//         planet.scale.set(value, value, value);
+//     }
+// });
+// gui.add(settings, 'lightIntensity', MIN_LIGHT_INTENSITY, MAX_LIGHT_INTENSITY).onChange((value) => {
+//     if (pointLight) {
+//         pointLight.intensity = value;
+//     }
+// });
+
+async function reloadSTLModel() {
+    console.log("Fetching new STL file...");
+    const blob = await fetchSTLFile(ENDPOINT_STL);
+    if (blob) {
+        loadSTLIntoScene(blob);
     }
-});
-gui.add(settings, 'lightIntensity', MIN_LIGHT_INTENSITY, MAX_LIGHT_INTENSITY).onChange((value) => {
-    if (pointLight) {
-        pointLight.intensity = value;
-    }
-});
+}
+
+const eventSource = new EventSource(SERVER_URL + "/notifications/");
+
+eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log("Push Notification:", data.message);
+    alert(`New Notification: ${data.message}`);
+    reloadSTLModel();
+};
