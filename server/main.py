@@ -10,6 +10,8 @@ import os
 
 from scripts.palm import extract_palm_region, to_camel_case_with_capital
 from scripts.landscape import generate_3d_mesh_from_heightmap
+from scripts.planet_one_palm import create_tiled_sphere
+from scripts.planet_multitile import create_tiled_sphere_from_folder
 
 from starlette.responses import FileResponse
 
@@ -31,11 +33,12 @@ PALM_FOLDER = "data/images/palms"
 PALM_NORMAL_FOLDER = PALM_FOLDER + "/normal"
 PALM_GREYSCALE_FOLDER = PALM_FOLDER + "/greyscale"
 DATA_FILE = Path("data") / "scheme.json"
-PLANET_FILE = Path("data") / "planet.json"
+PLANETS_FILE = Path("data") / "planet.json"
 
 LANDSCAPES_FOLDER = "data/landscapes"
 
-PLANET_FOLDER = "data/planets"
+PLANETS_FOLDER = "data/planets"
+PLANET_FOLDER = "data/planet"
 
 # INDEX_PAGE_FILE = Path("index.html")
 # INDEX_PAGE_FILE = Path("docs") / "index.html"
@@ -46,16 +49,16 @@ Path(PALM_FOLDER).mkdir(parents=True, exist_ok=True)
 Path(PALM_NORMAL_FOLDER).mkdir(parents=True, exist_ok=True)
 Path(PALM_GREYSCALE_FOLDER).mkdir(parents=True, exist_ok=True)
 Path(LANDSCAPES_FOLDER).mkdir(parents=True, exist_ok=True)
+Path(PLANETS_FOLDER).mkdir(parents=True, exist_ok=True)
 Path(PLANET_FOLDER).mkdir(parents=True, exist_ok=True)
-
 
 # Initialize the JSON data file if it doesn't exist
 if not DATA_FILE.exists():
     with open(DATA_FILE, "w") as f:
         json.dump({}, f)
 
-if not PLANET_FILE.exists():
-    with open(PLANET_FILE, "w") as f:
+if not PLANETS_FILE.exists():
+    with open(PLANETS_FILE, "w") as f:
         json.dump({}, f)
 
 # if not INDEX_PAGE_FILE.exists():
@@ -91,7 +94,7 @@ async def upload_file(
             if not isinstance(data, dict):
                 raise ValueError("data.json is not a dictionary!")
 
-        with open(PLANET_FILE, "r") as f:
+        with open(PLANETS_FILE, "r") as f:
             planet_data = json.load(f)
             if not isinstance(planet_data, dict):
                 raise ValueError("planet.json is not a dictionary!")
@@ -126,10 +129,18 @@ async def upload_file(
             # Delete the raw file if processing fails
             if file_location.exists():
                 file_location.unlink()
-            raise HTTPaException(status_code=400, detail=str(e))
+            raise HTTPException(status_code=400, detail=str(e))
 
         landscapes_file_location = Path(LANDSCAPES_FOLDER) / hashed_filename.replace(
             Path(file.filename).suffix, "_landscapes.stl"
+        )
+
+        planets_file_location = Path(PLANETS_FOLDER) / hashed_filename.replace(
+            Path(file.filename).suffix, "_planet.stl"
+        )
+
+        planet_file_location = Path(PLANET_FOLDER) / hashed_filename.replace(
+            Path(file.filename).suffix, "_planet.stl"
         )
 
         try:
@@ -139,6 +150,13 @@ async def upload_file(
                 sigma=5,
                 margin=20,
             )
+            create_tiled_sphere(
+                landscapes_file_location, planets_file_location, R=1, N=50
+            )
+            create_tiled_sphere_from_folder(
+                LANDSCAPES_FOLDER, planet_file_location, R=1, N=50
+            )
+
         except Exception as e:
             # Delete the raw file if processing fails
             if file_location.exists():
@@ -210,7 +228,7 @@ async def get_client_stl(client_ip: str):
 async def get_latest_stl():
     try:
         # Get all .stl files in the LANDSCAPES_FOLDER
-        stl_files = list(Path(PLANET_FOLDER).glob("*.stl"))
+        stl_files = list(Path(PLANETS_FOLDER).glob("*.stl"))
 
         if not stl_files:
             raise HTTPException(status_code=404, detail="No STL files found.")
@@ -250,7 +268,7 @@ async def get_latest_palm():
 async def get_latest_stl():
     try:
         # Get all .stl files in the LANDSCAPES_FOLDER
-        stl_files = list(Path(PLANET_FOLDER).glob("*.stl"))
+        stl_files = list(Path(PLANETS_FOLDER).glob("*.stl"))
 
         if not stl_files:
             raise HTTPException(status_code=404, detail="No STL files found.")
