@@ -5,7 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GUI } from 'dat.gui';
 
 const SERVER_URL = "http://api.cosmicimprint.org"
-const ENDPOINT_STL = SERVER_URL + "/planet/stl/latest";
+const ENDPOINT_STL = SERVER_URL + "/planets/stl/latest";
 
 // STL Models
 const canvas = document.getElementById('leftColumnCanvas');

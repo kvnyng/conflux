@@ -2,3 +2,4 @@ fastapi
 opencv-python
 mediapipe
 numpy-stl
+trimesh

@@ -224,7 +224,7 @@ async def get_client_stl(client_ip: str):
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
 
-@app.get("/planet/stl/latest")
+@app.get("/planets/stl/latest")
 async def get_latest_stl():
     try:
         # Get all .stl files in the LANDSCAPES_FOLDER
@@ -234,6 +234,24 @@ async def get_latest_stl():
             raise HTTPException(status_code=404, detail="No STL files found.")
 
         # Find the latest .stl file based on modification time
+        latest_stl = max(stl_files, key=os.path.getmtime)
+
+        return FileResponse(
+            latest_stl, media_type="application/vnd.ms-pkistl", filename=latest_stl.name
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
+@app.get("/planet/latest")
+async def get_latest_planet():
+    try:
+        stl_files = list(Path(PLANET_FOLDER).glob("*.stl"))
+
+        if not stl_files:
+            raise HTTPException(status_code=404, detail="No STL files found.")
+
         latest_stl = max(stl_files, key=os.path.getmtime)
 
         return FileResponse(
