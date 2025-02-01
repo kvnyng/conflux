@@ -11,3 +11,4 @@ demo/*
 *.xml
 models
 data_copy
+dist/
